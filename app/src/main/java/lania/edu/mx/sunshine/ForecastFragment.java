@@ -1,7 +1,9 @@
 package lania.edu.mx.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +41,7 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
 
         this.view = inflater.inflate(R.layout.fragment_main, container, false);
         addEventsToControls();
-        new FetchWeatherTask(this).execute("06300");
+        new FetchWeatherTask(this).execute(getZipCode(), getUnitType());
         return view;
     }
 
@@ -70,12 +72,30 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
         int itemId = item.getItemId();
 
         if (itemId == R.id.refresh_menu_item) {
-            new FetchWeatherTask(this).execute("06300");
+            new FetchWeatherTask(this).execute(getZipCode(), getUnitType());
             return true;
         }
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        new FetchWeatherTask(this).execute(getZipCode(), getUnitType());
+    }
+
+    private String getZipCode() {
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        return preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_deafult));
+    }
+
+    private String getUnitType() {
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        return preferences.getString(getString(R.string.pref_unitType_key), getString(R.string.pref_unitType_default));
     }
 
     @Override

@@ -34,7 +34,8 @@ public class FetchWeatherTask extends AsyncTask<String, Void, List<String>> {
     @Override
     protected List<String> doInBackground(String... params) {
         String postalCode = params[0];
-        return getRealData(postalCode);
+        String unitType = params[1];
+        return getRealData(postalCode, unitType);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, List<String>> {
         wheatherListener.onUpdate(data);
     }
 
-    private List<String> getRealData(String postalCode) {
+    private List<String> getRealData(String postalCode, String unitType) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
         String forecastJson = "";
@@ -52,7 +53,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, List<String>> {
             // "http://api.openweathermap.org/data/2.5/forecast/daily?q=06300&mode=json&units=metric&cnt=7"
             Uri uri = Uri.parse("http://api.openweathermap.org/data/2.5/forecast/daily").buildUpon()
                     .appendQueryParameter("q", postalCode).appendQueryParameter("mode", "json")
-                    .appendQueryParameter("units", "metric").appendQueryParameter("cnt", "" + numberOfDays).build();
+                    .appendQueryParameter("units", unitType).appendQueryParameter("cnt", "" + numberOfDays).build();
 
             Log.d(TAG, uri.toString());
             URL url = new URL(uri.toString());

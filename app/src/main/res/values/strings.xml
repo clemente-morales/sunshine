@@ -5,4 +5,10 @@
     <string name="sunshine_refresh" translatable="false">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_title">Location</string>
+    <string name="pref_location_deafult" translatable="false">06300</string>
+    <string name="pref_unitType_title">Pick your units</string>
+    <string name="pref_unitType_default">imperial</string>
+    <string name="pref_unitType_key">unittype</string>
 </resources>
