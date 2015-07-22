@@ -11,4 +11,6 @@
     <string name="pref_unitType_title">Pick your units</string>
     <string name="pref_unitType_default">imperial</string>
     <string name="pref_unitType_key">unittype</string>
+    <string name="title_activity_preferred_location">PreferredLocationActivity</string>
+    <string name="preferred_location_menu_option">Preferred location</string>
 </resources>
