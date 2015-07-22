@@ -1,7 +1,6 @@
 package lania.edu.mx.sunshine;
 
 import android.text.format.Time;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -125,9 +124,6 @@ public final class WeatherDataParser {
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
-        for (String s : resultStrs) {
-            Log.v(TAG, "Forecast entry: " + s);
-        }
         return resultStrs;
 
     }

@@ -1,5 +1,6 @@
 package lania.edu.mx.sunshine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -20,6 +22,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment implements FetchWeatherTask.WeatherListener {
 
     private static final String TAG = ForecastFragment.class.getSimpleName();
+    public static final String WEATHER_DATA = "weatherData";
 
     private ArrayAdapter<String> adapter;
     private View view;
@@ -35,8 +38,24 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
                              Bundle savedInstanceState) {
 
         this.view = inflater.inflate(R.layout.fragment_main, container, false);
+        addEventsToControls();
         new FetchWeatherTask(this).execute("06300");
         return view;
+    }
+
+
+    private void addEventsToControls() {
+        getForecastListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter = (ArrayAdapter<String>) parent.getAdapter();
+                String data = adapter.getItem(position);
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(WEATHER_DATA, data);
+                getActivity().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -63,11 +82,21 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
     public void onUpdate(List<String> data) {
         Log.d(TAG, "" + data);
 
-        if (data!=null) {
-            adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, data);
-
-            ListView listView = (ListView) view.findViewById(R.id.listview_forecast);
-            listView.setAdapter(adapter);
+        if (data != null) {
+            loadData(data);
         }
+    }
+
+    private void loadData(List<String> data) {
+        if (adapter != null) {
+            adapter.clear();
+        }
+
+        adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, data);
+        getForecastListView().setAdapter(adapter);
+    }
+
+    private ListView getForecastListView() {
+        return (ListView) view.findViewById(R.id.listview_forecast);
     }
 }
