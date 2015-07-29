@@ -41,7 +41,7 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
 
         this.view = inflater.inflate(R.layout.fragment_main, container, false);
         addEventsToControls();
-        new FetchWeatherTask(this).execute(getZipCode(), getUnitType());
+        new FetchWeatherTask(this, getActivity(), null).execute(getZipCode(), getUnitType());
         return view;
     }
 
@@ -72,7 +72,7 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
         int itemId = item.getItemId();
 
         if (itemId == R.id.refresh_menu_item) {
-            new FetchWeatherTask(this).execute(getZipCode(), getUnitType());
+            new FetchWeatherTask(this, getActivity(), null).execute(getZipCode(), getUnitType());
             return true;
         }
 
@@ -83,7 +83,7 @@ public class ForecastFragment extends Fragment implements FetchWeatherTask.Weath
     @Override
     public void onStart() {
         super.onStart();
-        new FetchWeatherTask(this).execute(getZipCode(), getUnitType());
+        new FetchWeatherTask(this, getActivity(), null).execute(getZipCode(), getUnitType());
     }
 
     private String getZipCode() {

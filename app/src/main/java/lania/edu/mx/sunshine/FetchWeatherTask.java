@@ -1,5 +1,8 @@
 package lania.edu.mx.sunshine;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,11 +17,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lania.edu.mx.sunshine.dao.WeatherContract;
+
 /**
  * Created by clemente on 7/21/15.
  */
 public class FetchWeatherTask extends AsyncTask<String, Void, List<String>> {
     private static final String TAG = FetchWeatherTask.class.getSimpleName();
+    private final Context context;
 
     private WeatherListener wheatherListener;
 
@@ -27,8 +33,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, List<String>> {
     }
 
 
-    public FetchWeatherTask(WeatherListener wheatherListener) {
+    public FetchWeatherTask(WeatherListener wheatherListener, Context context, Object object) {
         this.wheatherListener = wheatherListener;
+        this.context = context;
     }
 
     @Override
@@ -103,5 +110,30 @@ public class FetchWeatherTask extends AsyncTask<String, Void, List<String>> {
 
         return result;
 
+    }
+
+    public int addLocation(String locationSettings, String cityName, double lat, double lon) {
+
+        Cursor cursor = context.getContentResolver().query(
+                WeatherContract.LocationEntry.CONTENT_URI, new String[]{
+                        WeatherContract.LocationEntry._ID}, WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
+                new String[]{locationSettings}, null);
+
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
+            values.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSettings);
+            values.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
+            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
+            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
+
+            Uri uri = context.getContentResolver().insert(WeatherContract.LocationEntry.CONTENT_URI, values);
+            Log.d(TAG, uri.toString());
+            cursor.close();
+            return Integer.parseInt(uri.getPathSegments().get(1));
+        }
+
+        int resultado = cursor.getInt(0);
+        cursor.close();
+        return resultado;
     }
 }
